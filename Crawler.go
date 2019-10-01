@@ -3,12 +3,12 @@ package PttUtils
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"time"
+	"regexp"
+	"strconv"
 )
 
 type IndexInfo struct {
@@ -17,9 +17,12 @@ type IndexInfo struct {
 
 type IndexInitialParameters struct {
 	MaxIndex int
-	StartDate time.Time
+	LastDocUrl string
 	PinnedDocs int
-	LastDocumentUrlHash uint32
+}
+
+type DocumentMetrics struct {
+
 }
 
 
@@ -43,29 +46,57 @@ func NewCrawler(boardName string) (*Crawler, error) {
 }
 
 func (c *Crawler) GetIndexInitialParameters() (IndexInitialParameters, error) {
-	headIndexUrl := c.createHeadIndexUrl()
-	var contentReader io.Reader
-	if con, err := c.getContentReader(headIndexUrl); err != nil {
+	headIndexUrl := c.CreateHeadIndexUrl()
+	res, err := c.GetHttpResponse(headIndexUrl)
+	if err != nil {
 		return IndexInitialParameters{}, err
-	} else {
-		contentReader = con
 	}
 
 	// Required information :
 	// Index count, Last timestamp, Last document url hash
 	ret := IndexInitialParameters{}
 
-	doc, err := goquery.NewDocumentFromReader(contentReader)
+	//dump, err := ioutil.ReadAll(contentReader)
+	//fmt.Println(string(dump))
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+
 	if err != nil {
 		return IndexInitialParameters{}, err
 	}
 
+	//Index Count
+	doc.Find("div#action-bar-container a").Each(func(i int, selection *goquery.Selection) {
+		link, exists := selection.Attr("href")
+		if !exists {
+			return
+		}
+		r := regexp.MustCompile("/bbs/.+/index(\\d+)\\.html")
+		if find := r.FindStringSubmatch(link); len(find) > 1 {
+			index, _ := strconv.Atoi(find[1])
+			if index + 1 > ret.MaxIndex {
+				ret.MaxIndex = index + 1
+			}
+		}
+	})
 
+	ret.PinnedDocs = len(doc.Find(".r-list-sep").NextAll().Nodes)
+
+	var lastDoc *goquery.Selection
+	if ret.PinnedDocs > 0 {
+		lastDoc = doc.Find(".r-list-sep").Prev()
+	} else {
+		lastDoc = doc.Find(".r-ent").Last()
+	}
+
+	lastDocUrl, _ := lastDoc.Find(".title a").Attr("href")
+	lastDocUrl = "https://www.ptt.cc" + lastDocUrl
+	ret.LastDocUrl = lastDocUrl
 
 	return ret, nil
 }
 
-func (c *Crawler) createHeadIndexUrl() *url.URL {
+func (c *Crawler) CreateHeadIndexUrl() *url.URL {
 	if c.Board == "" {
 		panic("Not initialized, use NewCrawler() to create initialized Crawler!")
 	}
@@ -77,14 +108,14 @@ func (c *Crawler) createHeadIndexUrl() *url.URL {
 	}
 }
 
-func (c *Crawler) getContent(url *url.URL) (string, error) {
+func (c *Crawler) GetContent(url *url.URL) (string, error) {
 
-	reader, err := c.getContentReader(url)
+	reader, err := c.GetHttpResponse(url)
 	if err != nil {
 		return "", err
 	}
 
-	ba, err := ioutil.ReadAll(reader)
+	ba, err := ioutil.ReadAll(reader.Body)
 	if err != nil {
 		return "", err
 	}
@@ -92,7 +123,7 @@ func (c *Crawler) getContent(url *url.URL) (string, error) {
 	return string(ba), nil
 }
 
-func (c* Crawler) getContentReader(url *url.URL) (io.Reader, error) {
+func (c* Crawler) GetHttpResponse(url *url.URL) (*http.Response, error) {
 	var cookies []*http.Cookie
 	cookie := &http.Cookie{Name: "over18", Value: "1", Domain: "ptt.cc", Path: "/"}
 	cookies = append(cookies, cookie)
@@ -104,5 +135,5 @@ func (c* Crawler) getContentReader(url *url.URL) (io.Reader, error) {
 		return nil, err
 	}
 
-	return res.Body, nil
+	return res, nil
 }

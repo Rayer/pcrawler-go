@@ -26,6 +26,7 @@ func CreateRawDocument(fromUrl string) (*PDocRaw, error) {
 
 	if err != nil {
 		fmt.Printf("Error : %s\n", err)
+		return nil, err
 	}
 
 	var infoList []CommitInfo
