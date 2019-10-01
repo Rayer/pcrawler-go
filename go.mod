@@ -1,4 +1,4 @@
-module FWFinder
+module PttUtils
 
 go 1.12
 
@@ -11,4 +11,5 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.2.2
 	google.golang.org/appengine v1.6.0 // indirect
+	gopkg.in/h2non/gock.v1 v1.0.15
 )

@@ -1,7 +1,6 @@
-package test
+package PttUtils
 
 import (
-	"FWFinder"
 	"reflect"
 	"testing"
 )
@@ -13,7 +12,7 @@ func TestCreateRawDocument(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *PttUtils.PDocRaw
+		want    *PDocRaw
 		wantErr bool
 	}{
 		{
@@ -25,7 +24,7 @@ func TestCreateRawDocument(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := PttUtils.CreateRawDocument(tt.args.fromUrl)
+			_, err := CreateRawDocument(tt.args.fromUrl)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateRawDocument() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -64,7 +63,7 @@ func TestFetchArticleList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := PttUtils.FetchArticleList(tt.args.board, tt.args.start, tt.args.end)
+			_, err := FetchArticleList(tt.args.board, tt.args.start, tt.args.end)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FetchArticleList() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -85,7 +84,7 @@ func TestParseRangeDocument(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []*PttUtils.PDocRaw
+		want []*PDocRaw
 	}{
 		{
 			"Another Test3",
@@ -95,7 +94,7 @@ func TestParseRangeDocument(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PttUtils.ParseRangeDocument(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(got, tt.want) {
+			if got := ParseRangeDocument(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ParseRangeDocument() = %v, want %v", got, tt.want)
 			}
 		})

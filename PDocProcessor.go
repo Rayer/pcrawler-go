@@ -79,11 +79,11 @@ func CreateRawDocument(fromUrl string) (*PDocRaw, error) {
 		</div>
 	*/
 
-	raw, _ := doc.Html()
+	//raw, _ := doc.Html()
 	ret := &PDocRaw{
 		Title:             doc.Find("div#main-content").Find(":nth-child(3)").Find(".article-meta-value").Text(),
 		Author:            doc.Find("div#main-content").Find(":nth-child(1)").Find(".article-meta-value").Text(),
-		RawArticleHtml:    raw,
+		//RawArticleHtml:    raw,
 		PublicUrl:         fromUrl,
 		CommitterInfoList: infoList,
 		ProcessTime:       time.Now(),

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"FWFinder"
+	"PttUtils"
 	"fmt"
 	"github.com/akamensky/argparse"
 	"os"
