@@ -1,10 +1,10 @@
 package main
 
 import (
-	"PttUtils"
 	"fmt"
 	"github.com/akamensky/argparse"
 	"os"
+	"pcrawler"
 	"strconv"
 )
 
@@ -24,14 +24,14 @@ func main() {
 	start_i, err := strconv.ParseInt(*start, 10, 0)
 	end_i, err := strconv.ParseInt(*end, 10, 0)
 
-	PttUtils.ParseRangeDocument(*boardName, int(start_i), int(end_i))
+	pcrawler.ParseRangeDocument(*boardName, int(start_i), int(end_i))
 	//db, err := FWFinder.NewDBObject("node.rayer.idv.tw", "acc", "12qw12qw")
 	//if err != nil {
 	//	panic("Fail to connect database")
 	//}
 	//
 	//err = FWFinder.IterateDocuments(*boardName, int(start_i), int(end_i), func(docUrl string) {
-	//	doc, _ := FWFinder.CreateRawDocument(docUrl)
+	//	doc, _ := FWFinder.ParseSingleRawDocument(docUrl)
 	//	db.GetDB().
 	//
 	//})

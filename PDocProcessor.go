@@ -1,4 +1,4 @@
-package PttUtils
+package pcrawler
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func CreateRawDocument(fromUrl string) (*PDocRaw, error) {
+func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 
 	client, _ := createCrawlerClient(fromUrl)
 
@@ -159,7 +159,7 @@ func ParseRangeDocument(board string, start int, end int) []*PDocRaw {
 	var ret []*PDocRaw
 
 	_ = IterateDocuments(board, start, end, func(docUrl string) {
-		p, _ := CreateRawDocument(docUrl)
+		p, _ := ParseSingleRawDocument(docUrl)
 		ret = append(ret, p)
 		fmt.Printf("Completed parsed : %s with committer count %d\n", p.Title, len(p.CommitterInfoList))
 	})

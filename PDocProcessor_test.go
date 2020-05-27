@@ -1,4 +1,4 @@
-package PttUtils
+package pcrawler
 
 import (
 	"reflect"
@@ -24,13 +24,13 @@ func TestCreateRawDocument(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := CreateRawDocument(tt.args.fromUrl)
+			_, err := ParseSingleRawDocument(tt.args.fromUrl)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateRawDocument() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("ParseSingleRawDocument() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			//if !reflect.DeepEqual(got, tt.want) {
-			//	t.Errorf("CreateRawDocument() = %v, want %v", got, tt.want)
+			//	t.Errorf("ParseSingleRawDocument() = %v, want %v", got, tt.want)
 			//}
 		})
 	}

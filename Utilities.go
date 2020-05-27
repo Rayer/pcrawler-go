@@ -1,4 +1,4 @@
-package PttUtils
+package pcrawler
 
 func AIDtoURL (aid string) (string, error) {
 	return "", nil
