@@ -88,7 +88,7 @@ func TestParseRangeDocument(t *testing.T) {
 	}{
 		{
 			"Another Test3",
-			args{"Gossiping", 100, 110},
+			args{"Gossiping", 100, 105},
 			nil,
 		},
 	}
@@ -96,6 +96,37 @@ func TestParseRangeDocument(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ParseRangeDocument(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(got, tt.want) {
 				//t.Errorf("ParseRangeDocument() = %v, want %v", got, tt.want)
+				t.Logf("This test is only meant to be complete running.")
+			}
+		})
+	}
+}
+
+func TestParseRangeDocumentAsync(t *testing.T) {
+	type args struct {
+		board string
+		start int
+		end   int
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantRet []*PDocRaw
+	}{
+		{
+			name: "Async go routine test",
+			args: args{
+				board: "Gossiping",
+				start: 100,
+				end:   105,
+			},
+			wantRet: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotRet := ParseRangeDocumentAsync(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(gotRet, tt.wantRet) {
+				//t.Errorf("ParseRangeDocumentAsync() = %v, want %v", gotRet, tt.wantRet)
 				t.Logf("This test is only meant to be complete running.")
 			}
 		})

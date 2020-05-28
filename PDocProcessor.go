@@ -41,7 +41,7 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 		//Take last 11 of time string, because sometimes we will got IP as prefix....
 		var ctime_transformed time.Time
 		if len(ctime) >= 11 {
-			ctime_transformed, err = time.Parse("01/02 15:04", ctime[len(ctime) - 11 : ])
+			ctime_transformed, err = time.Parse("01/02 15:04", ctime[len(ctime)-11:])
 			if err != nil {
 				fmt.Printf("Error parsing %s, set to NOW() \n", ctime)
 				ctime_transformed = time.Now()
@@ -81,8 +81,8 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 
 	//raw, _ := doc.Html()
 	ret := &PDocRaw{
-		Title:             doc.Find("div#main-content").Find(":nth-child(3)").Find(".article-meta-value").Text(),
-		Author:            doc.Find("div#main-content").Find(":nth-child(1)").Find(".article-meta-value").Text(),
+		Title:  doc.Find("div#main-content").Find(":nth-child(3)").Find(".article-meta-value").Text(),
+		Author: doc.Find("div#main-content").Find(":nth-child(1)").Find(".article-meta-value").Text(),
 		//RawArticleHtml:    raw,
 		PublicUrl:         fromUrl,
 		CommitterInfoList: infoList,
@@ -115,7 +115,7 @@ func IterateDocuments(board string, start int, end int, onDocumentPath func(docU
 
 	i := start
 
-	for{
+	for {
 		targetUrl := fmt.Sprintf("https://www.ptt.cc/bbs/%s/index%d.html", board, i)
 		fmt.Printf("Will parse : %s\n", targetUrl)
 
@@ -168,6 +168,46 @@ func ParseRangeDocument(board string, start int, end int) []*PDocRaw {
 	return ret
 }
 
+func ParseRangeDocumentAsync(board string, start int, end int) (ret []*PDocRaw) {
+	parseChannel := make(chan *PDocRaw, 2)
+	var count int
+	docUrlList := make([]string, 0)
+	_ = IterateDocuments(board, start, end, func(docUrl string) {
+		docUrlList = append(docUrlList, docUrl)
+	})
+
+	for _, docUrl := range docUrlList {
+		count++
+		docUrl := docUrl
+		go func() {
+			workerChannel := make(chan *PDocRaw, 1)
+			go func() {
+				p, _ := ParseSingleRawDocument(docUrl)
+				workerChannel <- p
+			}()
+			select {
+			case res := <-workerChannel:
+				parseChannel <- res
+			case <-time.After(5 * time.Second):
+				parseChannel <- &PDocRaw{
+					Title: "Time out....",
+				}
+			}
+		}()
+	}
+
+	ret = make([]*PDocRaw, 0, 0)
+
+	for i := 0; i < count; i++ {
+		select {
+		case p := <-parseChannel:
+			fmt.Printf("(%d/%d)Completed parsed : %s with committer count %d\n", i+1, count, p.Title, len(p.CommitterInfoList))
+			ret = append(ret, p)
+		}
+	}
+
+	return ret
+}
 
 func Analyze(pdoc *PDocRaw) (*AnalyzedInfo, error) {
 
