@@ -20,7 +20,6 @@ type DBObject struct {
 	conn       *sql.DB
 }
 
-
 func NewDBObject(host string, user string, passwd string) (*DBObject, error) {
 	ret := DBObject{
 		Host:   host,
@@ -55,6 +54,6 @@ func InitDBObject(host string, user string, passwd string) {
 	g_DbObject, _ = NewDBObject(host, user, passwd)
 }
 
-func GetDBObject() *DBObject{
+func GetDBObject() *DBObject {
 	return g_DbObject
 }

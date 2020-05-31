@@ -3,6 +3,7 @@ package pcrawler
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/korovkin/limiter"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -169,39 +170,25 @@ func ParseRangeDocument(board string, start int, end int) []*PDocRaw {
 }
 
 func ParseRangeDocumentAsync(board string, start int, end int) (ret []*PDocRaw) {
-	parseChannel := make(chan *PDocRaw, 2)
-	var count int
+	parseChannel := make(chan *PDocRaw, 120)
 	docUrlList := make([]string, 0)
 	_ = IterateDocuments(board, start, end, func(docUrl string) {
 		docUrlList = append(docUrlList, docUrl)
 	})
 
+	limit := limiter.NewConcurrencyLimiter(3)
 	for _, docUrl := range docUrlList {
-		count++
-		docUrl := docUrl
-		go func() {
-			workerChannel := make(chan *PDocRaw, 1)
-			go func() {
-				p, _ := ParseSingleRawDocument(docUrl)
-				workerChannel <- p
-			}()
-			select {
-			case res := <-workerChannel:
-				parseChannel <- res
-			case <-time.After(5 * time.Second):
-				parseChannel <- &PDocRaw{
-					Title: "Time out....",
-				}
-			}
-		}()
+		limit.Execute(func() {
+			docUrl := docUrl
+			p, _ := ParseSingleRawDocument(docUrl)
+			parseChannel <- p
+		})
 	}
 
-	ret = make([]*PDocRaw, 0, 0)
-
-	for i := 0; i < count; i++ {
+	for i := 0; i < len(docUrlList); i++ {
 		select {
 		case p := <-parseChannel:
-			fmt.Printf("(%d/%d)Completed parsed : %s with committer count %d\n", i+1, count, p.Title, len(p.CommitterInfoList))
+			fmt.Printf("(%d/%d)Completed parsed : %s with committer count %d\n", i+1, len(docUrlList), p.Title, len(p.CommitterInfoList))
 			ret = append(ret, p)
 		}
 	}

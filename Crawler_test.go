@@ -56,19 +56,19 @@ func TestCrawler_GetIndexInitialParameters(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  *Crawler
-		want    IndexInitialParameters
+		want    IndexOverview
 		wantErr bool
 	}{
 		{
 			name:    "Test with pinned documents(common)",
 			fields:  NewCrawler("Case1"),
-			want:    IndexInitialParameters{MaxIndex: 38888, LastDocUrl: "https://www.ptt.cc/bbs/Gossiping/M.1569751115.A.5A7.html", PinnedDocs: 4},
+			want:    IndexOverview{MaxIndex: 38888, LastDocUrl: "https://www.ptt.cc/bbs/Gossiping/M.1569751115.A.5A7.html", PinnedDocs: 4},
 			wantErr: false,
 		},
 		{
 			name:    "Test without pinned documents",
 			fields:  NewCrawler("Case2"),
-			want:    IndexInitialParameters{MaxIndex: 5, LastDocUrl: "https://www.ptt.cc/bbs/NTUBSE-B-102/M.1513572458.A.C4D.html", PinnedDocs: 0},
+			want:    IndexOverview{MaxIndex: 5, LastDocUrl: "https://www.ptt.cc/bbs/NTUBSE-B-102/M.1513572458.A.C4D.html", PinnedDocs: 0},
 			wantErr: false,
 		},
 	}
@@ -76,7 +76,6 @@ func TestCrawler_GetIndexInitialParameters(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Crawler{
 				Board:        tt.fields.Board,
-				IndexInfo:    tt.fields.IndexInfo,
 				sharedClient: tt.fields.sharedClient,
 			}
 			got, err := c.GetIndexInitialParameters()
@@ -84,7 +83,8 @@ func TestCrawler_GetIndexInitialParameters(t *testing.T) {
 				t.Errorf("GetIndexInitialParameters() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+
+			if !reflect.DeepEqual(*got, tt.want) {
 				t.Errorf("GetIndexInitialParameters() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -109,10 +109,10 @@ func TestCrawler_ParseDocument(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Common documents(M.1569901516.A.5F2.html)",
-			fields:  NewCrawler("case1"),
-			args:    args{t1},
-			want:    &PDocRaw{
+			name:   "Common documents(M.1569901516.A.5F2.html)",
+			fields: NewCrawler("case1"),
+			args:   args{t1},
+			want: &PDocRaw{
 				UniqueID:          "",
 				Board:             "",
 				Title:             "[問卦] 有無永齡基金會的八卦？",
@@ -129,8 +129,8 @@ func TestCrawler_ParseDocument(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Crawler{
-				Board:        tt.fields.Board,
-				IndexInfo:    tt.fields.IndexInfo,
+				Board: tt.fields.Board,
+				//IndexInfo:    tt.fields.IndexInfo,
 				sharedClient: tt.fields.sharedClient,
 			}
 			got, err := c.ParseDocument(tt.args.url)

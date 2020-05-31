@@ -25,15 +25,5 @@ func main() {
 	end_i, err := strconv.ParseInt(*end, 10, 0)
 
 	pcrawler.ParseRangeDocument(*boardName, int(start_i), int(end_i))
-	//db, err := FWFinder.NewDBObject("node.rayer.idv.tw", "acc", "12qw12qw")
-	//if err != nil {
-	//	panic("Fail to connect database")
-	//}
-	//
-	//err = FWFinder.IterateDocuments(*boardName, int(start_i), int(end_i), func(docUrl string) {
-	//	doc, _ := FWFinder.ParseSingleRawDocument(docUrl)
-	//	db.GetDB().
-	//
-	//})
 
 }

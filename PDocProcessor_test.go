@@ -1,37 +1,63 @@
 package pcrawler
 
 import (
+	"encoding/json"
+	"github.com/magiconair/properties/assert"
+	diff "github.com/yudai/gojsondiff"
+	"gopkg.in/h2non/gock.v1"
+	"io/ioutil"
 	"reflect"
 	"testing"
 )
 
-func TestCreateRawDocument(t *testing.T) {
+//TODO: Use gock instead
+func TestParseSingleRawDocument(t *testing.T) {
+
+	defer gock.Off()
+	gock.New("https://www.ptt.cc/bbs/Gossiping").Get("/M.1559093660.A.946.html").Reply(200).File("test_resources/M.1559093660.A.946.html")
+
 	type args struct {
 		fromUrl string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *PDocRaw
-		wantErr bool
+		name                   string
+		args                   args
+		expectedResultFilename string
+		wantErr                bool
 	}{
 		{
 			"JustTestDraft",
 			args{"https://www.ptt.cc/bbs/Gossiping/M.1559093660.A.946.html"},
-			nil,
+			"M.1559093660.A.946.html.json",
 			false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := ParseSingleRawDocument(tt.args.fromUrl)
+			got, err := ParseSingleRawDocument(tt.args.fromUrl)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseSingleRawDocument() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			//if !reflect.DeepEqual(got, tt.want) {
-			//	t.Errorf("ParseSingleRawDocument() = %v, want %v", got, tt.want)
-			//}
+
+			//Compare result and expected
+			aString, err := json.Marshal(got)
+			if err != nil {
+				t.Error(err.Error())
+			}
+			bString, err := ioutil.ReadFile("test_resources/M.1559093660.A.946.html.json")
+			if err != nil {
+				t.Error(err.Error())
+			}
+
+			differ := diff.New()
+			d, err := differ.Compare(aString, bString)
+			if err != nil {
+				t.Error(err.Error())
+			}
+			//expect only "ProcessTime" different
+			assert.Equal(t, len(d.Deltas()), 1, "Parsed item is not match!")
+
 		})
 	}
 }

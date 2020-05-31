@@ -5,35 +5,30 @@ import (
 )
 
 type CommitInfo struct {
-	Type int
+	Type      int
 	Committer string
 	Timestamp time.Time
-	Content string
+	Content   string
 }
 
 type AnalyzedInfo struct {
-	DetectedFWNames []string
-	DetectedFWUPs int
-	DetectedFWDowns int
+	DetectedFWNames    []string
+	DetectedFWUPs      int
+	DetectedFWDowns    int
 	DetectedFWComments int
-	TransformedHTML string
+	TransformedHTML    string
 }
 
 //PTT Document raw contents
 type PDocRaw struct {
 	UniqueID string
-	Board string
-	Title string
-	Author string
+	Board    string
+	Title    string
+	Author   string
 	//RawArticleHtml string
-	Identifier string
-	PublicUrl string
-	PublishTime time.Time
-	ProcessTime time.Time
+	Identifier        string
+	PublicUrl         string
+	PublishTime       time.Time
+	ProcessTime       time.Time
 	CommitterInfoList []CommitInfo
-}
-
-func (p *PDocRaw) Article() string {
-
-	return ""
 }
