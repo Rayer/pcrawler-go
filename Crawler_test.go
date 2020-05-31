@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
+	"net/http"
 	"net/url"
 	"reflect"
 	"regexp"
@@ -56,19 +57,19 @@ func TestCrawler_GetIndexInitialParameters(t *testing.T) {
 	tests := []struct {
 		name    string
 		fields  *Crawler
-		want    IndexOverview
+		want    PIndex
 		wantErr bool
 	}{
 		{
 			name:    "Test with pinned documents(common)",
 			fields:  NewCrawler("Case1"),
-			want:    IndexOverview{MaxIndex: 38888, LastDocUrl: "https://www.ptt.cc/bbs/Gossiping/M.1569751115.A.5A7.html", PinnedDocs: 4},
+			want:    PIndex{MaxIndex: 38888, LastDocUrl: ErrorStripper(url.Parse("https://www.ptt.cc/bbs/Gossiping/M.1569751115.A.5A7.html")).(*url.URL), PinnedDocs: 4},
 			wantErr: false,
 		},
 		{
 			name:    "Test without pinned documents",
 			fields:  NewCrawler("Case2"),
-			want:    IndexOverview{MaxIndex: 5, LastDocUrl: "https://www.ptt.cc/bbs/NTUBSE-B-102/M.1513572458.A.C4D.html", PinnedDocs: 0},
+			want:    PIndex{MaxIndex: 5, LastDocUrl: ErrorStripper(url.Parse("https://www.ptt.cc/bbs/NTUBSE-B-102/M.1513572458.A.C4D.html")).(*url.URL), PinnedDocs: 0},
 			wantErr: false,
 		},
 	}
@@ -81,6 +82,11 @@ func TestCrawler_GetIndexInitialParameters(t *testing.T) {
 			got, err := c.GetIndexInitialParameters()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetIndexInitialParameters() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if got == nil {
+				t.Errorf("Strange, 'got' is nil but err is nil too!?")
 				return
 			}
 
@@ -140,6 +146,7 @@ func TestCrawler_ParseDocument(t *testing.T) {
 			}
 
 			if got == nil {
+				t.Errorf("Strange, 'got' is nil but err is nil too!?")
 				return
 			}
 
@@ -148,6 +155,56 @@ func TestCrawler_ParseDocument(t *testing.T) {
 			assert.Equal(t, tt.want.Author, got.Author)
 			assert.Equal(t, len(tt.want.CommitterInfoList), len(got.CommitterInfoList))
 
+		})
+	}
+}
+
+func TestCrawler_createIndexUrl(t *testing.T) {
+	type fields struct {
+		Board        string
+		sharedClient http.Client
+	}
+	type args struct {
+		index int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *url.URL
+	}{
+		{
+			name: "ShouldGenerateHeadIndex",
+			fields: fields{
+				Board:        "Gossiping",
+				sharedClient: http.Client{},
+			},
+			args: args{
+				index: 0,
+			},
+			want: ErrorStripper(url.Parse("https://www.ptt.cc/bbs/Gossiping/index.html")).(*url.URL),
+		},
+		{
+			name: "ShouldGenerateCorrectIndex",
+			fields: fields{
+				Board:        "Gossiping",
+				sharedClient: http.Client{},
+			},
+			args: args{
+				index: 125,
+			},
+			want: ErrorStripper(url.Parse("https://www.ptt.cc/bbs/Gossiping/index125.html")).(*url.URL),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Crawler{
+				Board:        tt.fields.Board,
+				sharedClient: tt.fields.sharedClient,
+			}
+			if got := c.createIndexUrl(tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("createIndexUrl() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

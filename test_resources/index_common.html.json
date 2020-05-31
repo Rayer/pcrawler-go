@@ -1,0 +1,426 @@
+{
+  "Board": "Gossiping",
+  "MaxIndex": 38888,
+  "LastDocUrl": {
+    "Scheme": "https",
+    "Opaque": "",
+    "User": null,
+    "Host": "www.ptt.cc",
+    "Path": "/bbs/Gossiping/M.1569751115.A.5A7.html",
+    "RawPath": "",
+    "ForceQuery": false,
+    "RawQuery": "",
+    "Fragment": ""
+  },
+  "PinnedDocs": 4,
+  "Articles": [
+    {
+      "Title": "[問卦] 生科能不能研究生物發電阿?",
+      "DateString": "9/29",
+      "Author": "dagayealo",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750254.A.13E.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "Re: [問卦] 年紀到了是不是真的沒甚麼朋友",
+      "DateString": "9/29",
+      "Author": "d86249",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750336.A.868.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 有沒有G水的八卦",
+      "DateString": "9/29",
+      "Author": "end56",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750347.A.CD4.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "Re: [新聞] 砸5百億高鐵南延 林佳龍舉百年前鐵道興",
+      "DateString": "9/29",
+      "Author": "ato0715",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750454.A.C69.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[新聞] 反送中╱灣仔有女記者眼部中彈 緊急送醫",
+      "DateString": "9/29",
+      "Author": "Ruo5566",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750456.A.CEB.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "Re: [問卦] 有男朋友是什麼感覺",
+      "DateString": "9/29",
+      "Author": "xzcb2008",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750461.A.C9E.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 搶到777777可以幹嘛???",
+      "DateString": "9/29",
+      "Author": "macaron5566",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750493.A.5E2.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] Do not deny me?",
+      "DateString": "9/29",
+      "Author": "sai5566",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750508.A.B07.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] wifi機都是哪種人在用?",
+      "DateString": "9/29",
+      "Author": "JUNOCARE",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750653.A.C65.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 香港人需要遊行還是難民法？",
+      "DateString": "9/29",
+      "Author": "benjy0218",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750801.A.E75.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[新聞] 「撐香港反極權、拒絕一中協議」　台港大遊行今登場",
+      "DateString": "9/29",
+      "Author": "idk",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750811.A.8DE.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[新聞] 日本公務員待遇超好？神人曝秘辛",
+      "DateString": "9/29",
+      "Author": "lkrichard",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750812.A.51E.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 喂！到底要怎麼樣才能快樂？",
+      "DateString": "9/29",
+      "Author": "xxxluke",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750956.A.58C.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 外送員兼職檢舉達人會賺到流油嗎？",
+      "DateString": "9/29",
+      "Author": "LoveMakeLove",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750982.A.B74.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 下雨天晚餐吃什麼好",
+      "DateString": "9/29",
+      "Author": "windisbig",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750984.A.073.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 全世界最難吃的食物是什麼？",
+      "DateString": "9/29",
+      "Author": "PaseIsGOOD",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569750995.A.C1C.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 肥宅從後面幫女生別上項鍊，有加分嗎？",
+      "DateString": "9/29",
+      "Author": "cowardlyman",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569751043.A.11A.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[問卦] 男女交往，男生出錢的機率真的那麼高嗎？",
+      "DateString": "9/29",
+      "Author": "peoplemore",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569751094.A.376.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "Re: [問卦] 明天有機會放颱風假嗎",
+      "DateString": "9/29",
+      "Author": "chinaeatshit",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569751111.A.6DB.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[新聞] 影／隔了11年重返黨中央　陳水扁：百感交",
+      "DateString": "9/29",
+      "Author": "Tsucomi69",
+      "Pinned": false,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569751115.A.5A7.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[公告] 八卦板板規(2019.08.21)",
+      "DateString": "8/21",
+      "Author": "arsonlolita",
+      "Pinned": true,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1566347622.A.9C7.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[尋人] 尋人啟示",
+      "DateString": "9/27",
+      "Author": "attention99",
+      "Pinned": true,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569585556.A.4FB.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "Fw: [尋人] 拜託大家幫幫忙",
+      "DateString": "9/28",
+      "Author": "bpjwe",
+      "Pinned": true,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1569665352.A.519.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    },
+    {
+      "Title": "[公告] 九月份中秋線上烤肉兼置底閒聊區",
+      "DateString": "9/13",
+      "Author": "Bignana",
+      "Pinned": true,
+      "Url": {
+        "Scheme": "https",
+        "Opaque": "",
+        "User": null,
+        "Host": "www.ptt.cc",
+        "Path": "//bbs/Gossiping/M.1568306552.A.64D.html",
+        "RawPath": "",
+        "ForceQuery": false,
+        "RawQuery": "",
+        "Fragment": ""
+      }
+    }
+  ]
+}

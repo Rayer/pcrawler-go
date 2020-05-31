@@ -26,7 +26,7 @@ func TestParseSingleRawDocument(t *testing.T) {
 		wantErr                bool
 	}{
 		{
-			"JustTestDraft",
+			"TestParseSingleDocument",
 			args{"https://www.ptt.cc/bbs/Gossiping/M.1559093660.A.946.html"},
 			"M.1559093660.A.946.html.json",
 			false,
@@ -75,13 +75,13 @@ func TestFetchArticleList(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"Another Test",
+			"Fetch article with normal case",
 			args{"Gossiping", 50, 52},
 			nil,
 			false,
 		},
 		{
-			"Another Test2",
+			"Fetch article with start > end : should be auto repaired",
 			args{"Gossiping", 52, 50},
 			nil,
 			false,
@@ -113,7 +113,7 @@ func TestParseRangeDocument(t *testing.T) {
 		want []*PDocRaw
 	}{
 		{
-			"Another Test3",
+			"Fetch article with single thread",
 			args{"Gossiping", 100, 105},
 			nil,
 		},

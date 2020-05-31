@@ -9,11 +9,11 @@ import (
 )
 
 func main() {
-	ap := argparse.NewParser("pdc", "Demo client for FWFinder")
+	ap := argparse.NewParser("pdc", "Demo client for pcrawler")
 
-	boardName := ap.String("b", "broadname", &argparse.Options{Required:true, Help:"Board Name"})
-	start := ap.String("s", "start", &argparse.Options{Required:true, Help:"Start index"})
-	end := ap.String("e", "end", &argparse.Options{Required:true, Help:"End index"})
+	boardName := ap.String("b", "broadname", &argparse.Options{Required: true, Help: "Board Name"})
+	start := ap.String("s", "start", &argparse.Options{Required: true, Help: "Start index"})
+	end := ap.String("e", "end", &argparse.Options{Required: true, Help: "End index"})
 	err := ap.Parse(os.Args)
 
 	if err != nil {

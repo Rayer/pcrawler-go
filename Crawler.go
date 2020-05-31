@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strconv"
 )
 
 type Crawler struct {
@@ -27,8 +28,8 @@ func NewCrawler(boardName string) *Crawler {
 	return &ret
 }
 
-func (c *Crawler) GetIndexInitialParameters() (*IndexOverview, error) {
-	headIndexUrl := c.createHeadIndexUrl()
+func (c *Crawler) GetIndexInitialParameters() (*PIndex, error) {
+	headIndexUrl := c.createIndexUrl(0)
 	res, err := c.getHttpResponse(headIndexUrl)
 	if err != nil {
 		return nil, err
@@ -39,23 +40,28 @@ func (c *Crawler) GetIndexInitialParameters() (*IndexOverview, error) {
 			logrus.Warnf("Fail to close connection : %s", err.Error())
 		}
 	}()
-	return ParseIndexOverview(res.Body)
+	return ParseIndexContent(res.Body)
 }
 
 func (c *Crawler) ParseDocument(url *url.URL) (*PDocRaw, error) {
 	return ParseSingleRawDocument(url.String())
 }
 
-func (c *Crawler) ParseIndex(index int) {
-	//indexUrl := c.createIndexUrl()
-}
+//func (c *Crawler) ParseIndex(index int) {
+//	//indexUrl := c.createIndexUrl()
+//}
 
-func (c *Crawler) createHeadIndexUrl() *url.URL {
-	if c.Board == "" {
-		panic("Not initialized, use NewCrawler() to create initialized Crawler!")
+//index = 0 or -1 means head index
+func (c *Crawler) createIndexUrl(index int) *url.URL {
+
+	var indexStr string
+	if index < 1 {
+		indexStr = ""
+	} else {
+		indexStr = strconv.Itoa(index)
 	}
 
-	if ret, err := url.Parse(fmt.Sprintf("https://www.ptt.cc/bbs/%s/index.html", c.Board)); err != nil {
+	if ret, err := url.Parse(fmt.Sprintf("https://www.ptt.cc/bbs/%s/index%s.html", c.Board, indexStr)); err != nil {
 		panic("Internal error...")
 	} else {
 		return ret
