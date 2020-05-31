@@ -10,7 +10,6 @@ import (
 	"testing"
 )
 
-//TODO: Use gock instead
 func TestParseSingleRawDocument(t *testing.T) {
 
 	defer gock.Off()
@@ -56,6 +55,10 @@ func TestParseSingleRawDocument(t *testing.T) {
 				t.Error(err.Error())
 			}
 			//expect only "ProcessTime" different
+			if d == nil {
+				t.Error("Compare is nil, kinda strange....")
+				return
+			}
 			assert.Equal(t, len(d.Deltas()), 1, "Parsed item is not match!")
 
 		})
@@ -101,7 +104,7 @@ func TestFetchArticleList(t *testing.T) {
 	}
 }
 
-func TestParseRangeDocument(t *testing.T) {
+func BenchmarkParseRangeDocument(b *testing.B) {
 	type args struct {
 		board string
 		start int
@@ -119,16 +122,16 @@ func TestParseRangeDocument(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		b.Run(tt.name, func(b *testing.B) {
 			if got := ParseRangeDocument(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(got, tt.want) {
 				//t.Errorf("ParseRangeDocument() = %v, want %v", got, tt.want)
-				t.Logf("This test is only meant to be complete running.")
+				b.Logf("This test is only meant to be complete running.")
 			}
 		})
 	}
 }
 
-func TestParseRangeDocumentAsync(t *testing.T) {
+func BenchmarkParseRangeDocumentAsync(b *testing.B) {
 	type args struct {
 		board string
 		start int
@@ -150,10 +153,10 @@ func TestParseRangeDocumentAsync(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		b.Run(tt.name, func(b *testing.B) {
 			if gotRet := ParseRangeDocumentAsync(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(gotRet, tt.wantRet) {
 				//t.Errorf("ParseRangeDocumentAsync() = %v, want %v", gotRet, tt.wantRet)
-				t.Logf("This test is only meant to be complete running.")
+				b.Logf("This test is only meant to be complete running.")
 			}
 		})
 	}

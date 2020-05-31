@@ -16,26 +16,26 @@ func TestParseIndexContent(t *testing.T) {
 		contentIo io.ReadCloser
 	}
 	tests := []struct {
-		name             string
-		args             args
-		wantResourceFile string
-		wantErr          bool
+		name                   string
+		args                   args
+		expectedResultFilename string
+		wantErr                bool
 	}{
 		{
 			name: "Pinned object",
 			args: args{
 				contentIo: GetResourceFromFile("test_resources/index_common.html"),
 			},
-			wantResourceFile: "test_resources/index_common.html.json",
-			wantErr:          false,
+			expectedResultFilename: "test_resources/index_common.html.json",
+			wantErr:                false,
 		},
 		{
 			name: "Non-pinned object",
 			args: args{
 				contentIo: GetResourceFromFile("test_resources/index_without_pinned.html"),
 			},
-			wantResourceFile: "test_resources/index_without_pinned.html.json",
-			wantErr:          false,
+			expectedResultFilename: "test_resources/index_without_pinned.html.json",
+			wantErr:                false,
 		},
 	}
 	for _, tt := range tests {
@@ -51,7 +51,7 @@ func TestParseIndexContent(t *testing.T) {
 
 			differ := diff.New()
 			aBytes, _ := json.Marshal(got)
-			bBytes, _ := ioutil.ReadFile(tt.wantResourceFile)
+			bBytes, _ := ioutil.ReadFile(tt.expectedResultFilename)
 			result, _ := differ.Compare(aBytes, bBytes)
 
 			assert.Equal(t, len(result.Deltas()), 0, fmt.Sprintf("Delta : %+v", result.Deltas()))
