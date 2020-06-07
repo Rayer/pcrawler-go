@@ -1,4 +1,4 @@
-module pcrawler
+module github.com/Rayer/pcrawler-go
 
 go 1.12
 

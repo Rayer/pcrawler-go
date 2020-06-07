@@ -176,7 +176,7 @@ func ParseRangeDocumentAsync(board string, start int, end int) (ret []*PDocRaw) 
 		docUrlList = append(docUrlList, docUrl)
 	})
 
-	limit := limiter.NewConcurrencyLimiter(3)
+	limit := limiter.NewConcurrencyLimiter(5)
 	for _, docUrl := range docUrlList {
 		limit.Execute(func() {
 			docUrl := docUrl

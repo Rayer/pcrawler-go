@@ -49,54 +49,6 @@ func TestCrawler_ParseDocumentRaw(t *testing.T) {
 	fmt.Println(doc)
 }
 
-func TestCrawler_GetIndexInitialParameters(t *testing.T) {
-	defer gock.Off()
-	gock.New("https://www.ptt.cc/bbs/Case1").Get("/index.html").Reply(200).File("test_resources/index_common.html")
-	gock.New("https://www.ptt.cc/bbs/Case2").Get("/index.html").Reply(200).File("test_resources/index_without_pinned.html")
-
-	tests := []struct {
-		name    string
-		fields  *Crawler
-		want    PIndex
-		wantErr bool
-	}{
-		{
-			name:    "Test with pinned documents(common)",
-			fields:  NewCrawler("Case1"),
-			want:    PIndex{MaxIndex: 38888, LastDocUrl: ErrorStripper(url.Parse("https://www.ptt.cc/bbs/Gossiping/M.1569751115.A.5A7.html")).(*url.URL), PinnedDocs: 4},
-			wantErr: false,
-		},
-		{
-			name:    "Test without pinned documents",
-			fields:  NewCrawler("Case2"),
-			want:    PIndex{MaxIndex: 5, LastDocUrl: ErrorStripper(url.Parse("https://www.ptt.cc/bbs/NTUBSE-B-102/M.1513572458.A.C4D.html")).(*url.URL), PinnedDocs: 0},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &Crawler{
-				Board:        tt.fields.Board,
-				sharedClient: tt.fields.sharedClient,
-			}
-			got, err := c.GetIndexInitialParameters()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("GetIndexInitialParameters() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			if got == nil {
-				t.Errorf("Strange, 'got' is nil but err is nil too!?")
-				return
-			}
-
-			if !reflect.DeepEqual(*got, tt.want) {
-				t.Errorf("GetIndexInitialParameters() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestCrawler_ParseDocument(t *testing.T) {
 	defer gock.Off()
 
