@@ -6,7 +6,6 @@ import (
 	diff "github.com/yudai/gojsondiff"
 	"gopkg.in/h2non/gock.v1"
 	"io/ioutil"
-	"reflect"
 	"testing"
 )
 
@@ -117,15 +116,14 @@ func BenchmarkParseRangeDocument(b *testing.B) {
 	}{
 		{
 			"Fetch article with single thread",
-			args{"Gossiping", 100, 105},
+			args{"Gossiping", 100, 102},
 			nil,
 		},
 	}
-	for _, tt := range tests {
-		b.Run(tt.name, func(b *testing.B) {
-			if got := ParseRangeDocument(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(got, tt.want) {
-				//t.Errorf("ParseRangeDocument() = %v, want %v", got, tt.want)
-				b.Logf("This test is only meant to be complete running.")
+	for _, bm := range tests {
+		b.Run(bm.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				ParseRangeDocument(bm.args.board, bm.args.start, bm.args.end)
 			}
 		})
 	}
@@ -147,16 +145,15 @@ func BenchmarkParseRangeDocumentAsync(b *testing.B) {
 			args: args{
 				board: "Gossiping",
 				start: 100,
-				end:   105,
+				end:   102,
 			},
 			wantRet: nil,
 		},
 	}
 	for _, tt := range tests {
 		b.Run(tt.name, func(b *testing.B) {
-			if gotRet := ParseRangeDocumentAsync(tt.args.board, tt.args.start, tt.args.end); !reflect.DeepEqual(gotRet, tt.wantRet) {
-				//t.Errorf("ParseRangeDocumentAsync() = %v, want %v", gotRet, tt.wantRet)
-				b.Logf("This test is only meant to be complete running.")
+			for i := 0; i < b.N; i++ {
+				ParseRangeDocumentAsync(tt.args.board, tt.args.start, tt.args.end)
 			}
 		})
 	}

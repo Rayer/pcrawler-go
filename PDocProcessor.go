@@ -170,11 +170,11 @@ func ParseRangeDocument(board string, start int, end int) []*PDocRaw {
 }
 
 func ParseRangeDocumentAsync(board string, start int, end int) (ret []*PDocRaw) {
-	parseChannel := make(chan *PDocRaw, 120)
 	docUrlList := make([]string, 0)
 	_ = IterateDocuments(board, start, end, func(docUrl string) {
 		docUrlList = append(docUrlList, docUrl)
 	})
+	parseChannel := make(chan *PDocRaw, len(docUrlList))
 
 	limit := limiter.NewConcurrencyLimiter(5)
 	for _, docUrl := range docUrlList {
