@@ -18,6 +18,15 @@ type ReqWSPayload struct {
 	Payload []ReqWSEntry `json:"sentence_with_keys"`
 }
 
+type ReqWSEntityResponse struct {
+	Key    string     `json:"key"`
+	Result [][]string `json:"result"`
+}
+
+type ReqWSResponse struct {
+	Response []ReqWSEntityResponse `json:"response"`
+}
+
 func TestWSServer(t *testing.T) {
 	//wsserver := "http://node1.rayer.idv.tw/"
 	c := NewCrawler("gossiping")
@@ -41,18 +50,13 @@ func TestWSServer(t *testing.T) {
 	}
 
 	payload := ReqWSPayload{}
-	//count := 0
 	for k, v := range collector.GetMap() {
 		for _, s := range v {
 			payload.Payload = append(payload.Payload, ReqWSEntry{
 				Key:      k,
 				Sentence: s.Sentence,
 			})
-			//count++
 		}
-		//if count > 30 {
-		//	break
-		//}
 	}
 	body, _ := json.Marshal(&payload)
 	fmt.Printf("payload : %v\n", string(body))
@@ -63,5 +67,7 @@ func TestWSServer(t *testing.T) {
 	}
 	defer resp.Body.Close()
 	res_json, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(res_json))
+	res := &ReqWSResponse{}
+	json.Unmarshal(res_json, res)
+	fmt.Printf("%+v", res)
 }
