@@ -69,7 +69,7 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 			Type:      ctype_transformed,
 			Committer: name,
 			Timestamp: ctime_transformed,
-			Content:   content,
+			Content:   strings.Trim(content, ":"),
 		})
 	})
 
