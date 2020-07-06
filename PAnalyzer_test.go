@@ -29,6 +29,7 @@ type ReqWSResponse struct {
 
 func TestWSServer(t *testing.T) {
 	//wsserver := "http://node1.rayer.idv.tw/"
+	t.Skip("We don't have ws server now...")
 	c := NewCrawler("gossiping")
 	indexInfo, err := c.ParseIndex(100)
 	if err != nil {
