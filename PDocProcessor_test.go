@@ -58,6 +58,7 @@ func TestParseSingleRawDocument(t *testing.T) {
 				t.Error("Compare is nil, kinda strange....")
 				return
 			}
+
 			assert.Equal(t, len(d.Deltas()), 1, "Parsed item is not match!")
 
 		})

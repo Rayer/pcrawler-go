@@ -47,9 +47,18 @@ func (c *Crawler) ParseDocument(url *url.URL) (*PDocRaw, error) {
 	return ParseSingleRawDocument(url.String())
 }
 
-//func (c *Crawler) ParseIndex(index int) {
-//	//indexUrl := c.createIndexUrl()
-//}
+func (c *Crawler) ParseIndex(num int) (*PIndex, error) {
+	url := c.createIndexUrl(num)
+	res, err := c.getHttpResponse(url)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = res.Body.Close()
+	}()
+
+	return ParseIndexContent(res.Body)
+}
 
 //index = 0 or -1 means head index
 func (c *Crawler) createIndexUrl(index int) *url.URL {
