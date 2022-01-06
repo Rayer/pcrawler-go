@@ -21,11 +21,11 @@ type AnalyzedInfo struct {
 
 //PTT Document raw contents
 type PDocRaw struct {
-	UniqueID string
-	Board    string
-	Title    string
-	Author   string
-	//RawArticleHtml string
+	UniqueID          string
+	Board             string
+	Title             string
+	Author            string
+	RawArticleHtml    string
 	Identifier        string
 	PublicUrl         string
 	PublishTime       time.Time
