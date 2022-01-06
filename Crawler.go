@@ -48,8 +48,8 @@ func (c *Crawler) ParseDocument(url *url.URL) (*PDocRaw, error) {
 }
 
 func (c *Crawler) ParseIndex(num int) (*PIndex, error) {
-	url := c.createIndexUrl(num)
-	res, err := c.getHttpResponse(url)
+	targetUrl := c.createIndexUrl(num)
+	res, err := c.getHttpResponse(targetUrl)
 	if err != nil {
 		return nil, err
 	}

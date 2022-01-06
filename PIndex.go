@@ -71,13 +71,17 @@ func ParseIndexContent(contentIo io.ReadCloser) (*PIndex, error) {
 	doc.Find(".r-ent").Each(func(i int, s *goquery.Selection) {
 		articleHref, _ := s.Find("a").Attr("href")
 		articleUrl, _ := url.Parse("https://www.ptt.cc/" + articleHref)
-		baList = append(baList, &BriefArticleInfo{
-			Title:      s.Find("a").Get(0).FirstChild.Data,
-			DateString: strings.Trim(s.Find(".date").Text(), " "),
-			Author:     s.Find(".author").Text(),
-			Pinned:     articleIndex >= articleCount-pinnedDocs,
-			Url:        articleUrl,
-		})
+		//Handle deleted article.
+		//If article is deleted, articleHref will be empty
+		if articleHref != "" {
+			baList = append(baList, &BriefArticleInfo{
+				Title:      s.Find("a").Get(0).FirstChild.Data,
+				DateString: strings.Trim(s.Find(".date").Text(), " "),
+				Author:     s.Find(".author").Text(),
+				Pinned:     articleIndex >= articleCount-pinnedDocs,
+				Url:        articleUrl,
+			})
+		}
 		articleIndex++
 	})
 
