@@ -16,9 +16,11 @@ limitations under the License.
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"github.com/Rayer/pcrawler-go"
 	"github.com/spf13/cobra"
+	"sync"
 )
 
 var startIndex int
@@ -64,7 +66,7 @@ to quickly create a Cobra application.`,
 
 		articleInfoList := make([]*pcrawler.BriefArticleInfo, 0)
 
-		fmt.Printf("Parsing board %s from %v to %v (most recent : %v)...", board, startIndex, endIndex, maxIndex)
+		fmt.Printf("Parsing board %s from %v to %v (most recent : %v)...\n", board, startIndex, endIndex, maxIndex)
 		for i := startIndex; i <= endIndex; i++ {
 			indexInfo, err := c.ParseIndex(i)
 			if err != nil {
@@ -74,21 +76,42 @@ to quickly create a Cobra application.`,
 			articleInfoList = append(articleInfoList, indexInfo.Articles...)
 		}
 
+		renderCtx, renderCancel := context.WithCancel(context.Background())
+
+		imgExtractCtx, imgExtractCancel := context.WithCancel(context.Background())
+		imgStorageCtx, imgStorageCancel := context.WithCancel(context.Background())
+		wgImgExtract := &sync.WaitGroup{}
+		wgImgStorage := &sync.WaitGroup{}
+		wgImgExtract.Add(len(articleInfoList))
+		imgExtractInput := make(chan *pcrawler.BriefArticleInfo)
+		renderChannel := make(chan RenderResult, 200)
+		imgTaskChannel := make(chan ImageTask, 200)
+		for i := 0; i < 5; i++ {
+			go ImageExtractWorker(imgExtractCtx, board, imageStoragePath, imgExtractInput, imgTaskChannel, renderChannel, wgImgExtract, wgImgStorage)
+		}
+		for i := 0; i < 5; i++ {
+			go ExecuteImageStorageWorker(imgStorageCtx, imgTaskChannel, renderChannel, wgImgStorage)
+		}
+		go RenderWorker(renderCtx, renderChannel)
+		for _, a := range articleInfoList {
+			imgExtractInput <- a
+		}
+
+		wgImgExtract.Wait()
+		wgImgStorage.Wait()
+		imgExtractCancel()
+		imgStorageCancel()
+		renderCancel()
+
 		return nil
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.Flags().IntVarP(&startIndex, "start", "s", -10, "")
 	rootCmd.Flags().IntVarP(&endIndex, "end", "e", 0, "")
 	rootCmd.Flags().StringVarP(&imageStoragePath, "path", "p", "", "")
