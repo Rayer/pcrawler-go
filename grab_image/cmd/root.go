@@ -26,17 +26,14 @@ import (
 var startIndex int
 var endIndex int
 var imageStoragePath string
+var noSubFolder bool
+var logInsteadProgBar bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "grab_image <board name>",
 	Short: "Grab all image in destinated range",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Long:  `A utility to search and download images on PTT board`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return fmt.Errorf("a board name is required")
@@ -84,15 +81,20 @@ to quickly create a Cobra application.`,
 		wgImgStorage := &sync.WaitGroup{}
 		wgImgExtract.Add(len(articleInfoList))
 		imgExtractInput := make(chan *pcrawler.BriefArticleInfo)
-		renderChannel := make(chan RenderResult, 200)
-		imgTaskChannel := make(chan ImageTask, 200)
+		renderChannel := make(chan RenderResult, 2000)
+		imgTaskChannel := make(chan ImageTask, 2000)
 		for i := 0; i < 5; i++ {
 			go ImageExtractWorker(imgExtractCtx, board, imageStoragePath, imgExtractInput, imgTaskChannel, renderChannel, wgImgExtract, wgImgStorage)
 		}
 		for i := 0; i < 5; i++ {
-			go ExecuteImageStorageWorker(imgStorageCtx, imgTaskChannel, renderChannel, wgImgStorage)
+			go ExecuteImageStorageWorker(imgStorageCtx, noSubFolder, imgTaskChannel, renderChannel, wgImgStorage)
 		}
-		go RenderWorker(renderCtx, renderChannel)
+		if logInsteadProgBar {
+			go ShowLogs(renderCtx, renderChannel)
+		} else {
+			go ShowProgress(renderCtx, renderChannel)
+		}
+
 		for _, a := range articleInfoList {
 			imgExtractInput <- a
 		}
@@ -112,9 +114,11 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().IntVarP(&startIndex, "start", "s", -10, "")
-	rootCmd.Flags().IntVarP(&endIndex, "end", "e", 0, "")
-	rootCmd.Flags().StringVarP(&imageStoragePath, "path", "p", "", "")
+	rootCmd.Flags().IntVarP(&startIndex, "start", "s", -10, "Start index, can bo positive or negative")
+	rootCmd.Flags().IntVarP(&endIndex, "end", "e", 0, "End index, can be positive or negative")
+	rootCmd.Flags().StringVarP(&imageStoragePath, "path", "p", "", "Image storage path")
+	rootCmd.Flags().BoolVarP(&noSubFolder, "nosub", "f", false, "Collect all image in same folder")
+	rootCmd.Flags().BoolVarP(&logInsteadProgBar, "showlog", "l", false, "Show log instead of progress bar")
 
 	_ = rootCmd.MarkFlagRequired("path")
 

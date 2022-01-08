@@ -11,6 +11,7 @@ require (
 	github.com/magiconair/properties v1.8.5
 	github.com/onsi/ginkgo v1.12.2 // indirect
 	github.com/pkg/errors v0.8.1
+	github.com/schollz/progressbar/v3 v3.8.5 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v1.3.0
@@ -18,6 +19,5 @@ require (
 	github.com/yudai/gojsondiff v1.0.0
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
-	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	gopkg.in/h2non/gock.v1 v1.0.15
 )
