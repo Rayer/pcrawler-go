@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/Rayer/pcrawler-go"
+	"github.com/schollz/progressbar/v3"
 	"io"
 	"math/rand"
 	"net/http"
@@ -18,15 +19,34 @@ import (
 )
 
 type ImageTask struct {
-	BoardName string
-	Date      string
-	Folder    string
-	ImageUrl  string
-	RootPath  string
+	BoardName   string
+	Date        string
+	Folder      string
+	ImageUrl    string
+	RootPath    string
+	NoSubFolder bool
+}
+
+func (i *ImageTask) GetDestinationDir() string {
+	var ret string
+	if noSubFolder {
+		ret = path.Join(i.RootPath, i.BoardName)
+	} else {
+		ret = path.Join(i.RootPath, i.BoardName, i.Folder)
+	}
+
+	return ret
+}
+
+type ProgressMessage struct {
+	AddCrawlerTaskCount     int
+	ConsumeCrawlerTaskCount int
+	IsCrawlMessageError     bool
+	Message                 string
 }
 
 type RenderResult interface {
-	Render() string
+	Progress() ProgressMessage
 }
 
 type ImageTaskResult struct {
@@ -34,8 +54,18 @@ type ImageTaskResult struct {
 	err  error
 }
 
-func (i *ImageTaskResult) Render() string {
-	return fmt.Sprintf("saving %s to folder %s.... err : %v", i.Task.ImageUrl, i.Task.Folder, i.err)
+func (i *ImageTaskResult) Progress() ProgressMessage {
+	return ProgressMessage{
+		AddCrawlerTaskCount: 0,
+		ConsumeCrawlerTaskCount: func() int {
+			if i.err == nil {
+				return 1
+			}
+			return 0
+		}(),
+		IsCrawlMessageError: i.err != nil,
+		Message:             fmt.Sprintf("saving %s into %s...", i.Task.ImageUrl, i.Task.GetDestinationDir()),
+	}
 }
 
 type ImageExtractResult struct {
@@ -44,8 +74,13 @@ type ImageExtractResult struct {
 	err       error
 }
 
-func (i *ImageExtractResult) Render() string {
-	return fmt.Sprintf("grabbed %v image urls from %s.... err : %v", len(i.Extracted), i.TargetUrl, i.err)
+func (i *ImageExtractResult) Progress() ProgressMessage {
+	return ProgressMessage{
+		AddCrawlerTaskCount:     len(i.Extracted),
+		ConsumeCrawlerTaskCount: 0,
+		IsCrawlMessageError:     false,
+		Message:                 fmt.Sprintf("extracted %v images from %v", len(i.Extracted), i.TargetUrl.String()),
+	}
 }
 
 func ExtractImageFromHtmlTask(url *url.URL) ([]string, error) {
@@ -75,13 +110,15 @@ func ExtractImageFromHtmlTask(url *url.URL) ([]string, error) {
 	return ret, nil
 }
 
-func ExecuteImageStorageTask(task ImageTask) ImageTaskResult {
+func ExecuteImageStorageTask(task ImageTask, noSubFolder bool) ImageTaskResult {
 
+	task.NoSubFolder = noSubFolder
 	ret := ImageTaskResult{
 		Task: task,
 	}
 
-	targetDir := path.Join(task.RootPath, task.BoardName, task.Folder)
+	targetDir := task.GetDestinationDir()
+
 	//If doesn't have this folder, create one
 	stat, err := os.Stat(targetDir)
 	if os.IsNotExist(err) {
@@ -151,13 +188,13 @@ func ImageExtractWorker(ctx context.Context, boardName string, rootPath string, 
 	}
 }
 
-func ExecuteImageStorageWorker(ctx context.Context, inputChan <-chan ImageTask, outputChan chan<- RenderResult, wg *sync.WaitGroup) {
+func ExecuteImageStorageWorker(ctx context.Context, noSubFolder bool, inputChan <-chan ImageTask, outputChan chan<- RenderResult, wg *sync.WaitGroup) {
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case input := <-inputChan:
-			result := ExecuteImageStorageTask(input)
+			result := ExecuteImageStorageTask(input, noSubFolder)
 			outputChan <- &result
 			time.Sleep(time.Duration(rand.Intn(1500)+500) * time.Millisecond)
 			wg.Done()
@@ -165,13 +202,57 @@ func ExecuteImageStorageWorker(ctx context.Context, inputChan <-chan ImageTask, 
 	}
 }
 
-func RenderWorker(ctx context.Context, renderInput <-chan RenderResult) {
+func ShowProgress(ctx context.Context, renderInput <-chan RenderResult) {
+	//p := progressbar.Default(100, "working...")
+	p := progressbar.NewOptions(1000,
+		//progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
+		progressbar.OptionEnableColorCodes(true),
+		progressbar.OptionShowBytes(false),
+		progressbar.OptionShowCount(),
+		progressbar.OptionSetPredictTime(false),
+		//progressbar.OptionSetWidth(40),
+		progressbar.OptionSetTheme(progressbar.Theme{
+			Saucer:        "[green]=[reset]",
+			SaucerHead:    "[green]>[reset]",
+			SaucerPadding: "[red]-[reset]",
+			BarStart:      "[",
+			BarEnd:        "]",
+		}),
+	)
+	totalCrawlTask := 0
+	consumedCrawlTask := 0
+	errCount := 0
+
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case render := <-renderInput:
-			fmt.Println(render.Render())
+			message := render.Progress()
+			totalCrawlTask += message.AddCrawlerTaskCount
+			consumedCrawlTask += message.ConsumeCrawlerTaskCount
+			if message.IsCrawlMessageError {
+				errCount += 1
+			}
+			showText := message.Message
+			if len(showText) > 35 {
+				showText = showText[:33] + "..."
+			}
+			p.ChangeMax(totalCrawlTask)
+			_ = p.Set(consumedCrawlTask)
+			p.Describe(showText)
+		}
+	}
+}
+
+func ShowLogs(ctx context.Context, renderInput <-chan RenderResult) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case render := <-renderInput:
+			message := render.Progress()
+			fmt.Println(message.Message)
 		}
 	}
 }
