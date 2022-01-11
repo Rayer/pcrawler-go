@@ -46,9 +46,6 @@ func TestParseIndexContent(t *testing.T) {
 				return
 			}
 
-			//bytes, _ := json.Marshal(got)
-			//ioutil.WriteFile("/tmp/ti" + tt.name, bytes, 0644)
-
 			differ := diff.New()
 			aBytes, _ := json.Marshal(got)
 			bBytes, _ := ioutil.ReadFile(tt.expectedResultFilename)

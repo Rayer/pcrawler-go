@@ -20,7 +20,7 @@ func NewUserSentenceInfoCollector() *UserSentenceInfoCollector {
 }
 
 func (u *UserSentenceInfoCollector) Collect(doc *PDocRaw) error {
-	for _, a := range doc.CommitterInfoList {
+	for _, a := range doc.CommentInfoList {
 		u.UserSentenceMap[a.Committer] = append(u.UserSentenceMap[a.Committer], NewSentenceInfo(a.Content, a.Timestamp))
 	}
 	return nil

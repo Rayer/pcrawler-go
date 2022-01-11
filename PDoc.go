@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type CommitInfo struct {
+type CommentInfo struct {
 	Type      int
 	Committer string
 	Timestamp time.Time
@@ -21,14 +21,17 @@ type AnalyzedInfo struct {
 
 //PTT Document raw contents
 type PDocRaw struct {
-	UniqueID          string
-	Board             string
-	Title             string
-	Author            string
-	RawArticleHtml    string
-	Identifier        string
-	PublicUrl         string
-	PublishTime       time.Time
-	ProcessTime       time.Time
-	CommitterInfoList []CommitInfo
+	UniqueID            string
+	Board               string
+	Title               string
+	Author              string
+	RawArticleHtml      string
+	Identifier          string
+	PublicUrl           string
+	PublishTime         time.Time
+	ProcessTime         time.Time
+	CommentInfoList     []CommentInfo
+	CommentUpCount      int
+	CommentDownCount    int
+	CommentNeutralCount int
 }

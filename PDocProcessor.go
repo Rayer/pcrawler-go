@@ -20,8 +20,6 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 	if err != nil {
 		fmt.Printf("Error : %s\n", err)
 	}
-	//body, err := ioutil.ReadAll(res.Body)
-	//fmt.Printf("Body : %s", body)
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 
@@ -30,7 +28,8 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 		return nil, err
 	}
 
-	var infoList []CommitInfo
+	var infoList []CommentInfo
+	var commentUp, commentDown, commentNeutral int
 
 	doc.Find(".push").Each(func(i int, s *goquery.Selection) {
 		//fmt.Println(s.Text())
@@ -52,21 +51,24 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 			ctime_transformed = time.Now()
 		}
 
-		var ctype_transformed int
+		var ctypeTransformed int
 		switch ctype {
 		case "推 ":
-			ctype_transformed = 1
+			commentUp++
+			ctypeTransformed = 1
 		case "噓 ":
-			ctype_transformed = -1
+			commentDown++
+			ctypeTransformed = -1
 		case "→ ":
-			ctype_transformed = 0
+			commentNeutral++
+			ctypeTransformed = 0
 		default:
 			fmt.Printf("Can't transform ctype : %s\n", ctype)
 		}
 
 		//fmt.Printf("Find %s(%s)(%s) : %s\n", name, ctime, ctype, content)
-		infoList = append(infoList, CommitInfo{
-			Type:      ctype_transformed,
+		infoList = append(infoList, CommentInfo{
+			Type:      ctypeTransformed,
 			Committer: name,
 			Timestamp: ctime_transformed,
 			Content:   strings.Trim(strings.Trim(content, ":"), " "),
@@ -81,16 +83,20 @@ func ParseSingleRawDocument(fromUrl string) (*PDocRaw, error) {
 	*/
 
 	//raw, _ := doc.Html()
+
 	ret := &PDocRaw{
 		Title:  doc.Find("div#main-content").Find(":nth-child(3)").Find(".article-meta-value").Text(),
 		Author: doc.Find("div#main-content").Find(":nth-child(1)").Find(".article-meta-value").Text(),
 		//RawArticleHtml:    raw,
-		PublicUrl:         fromUrl,
-		CommitterInfoList: infoList,
-		ProcessTime:       time.Now(),
+		PublicUrl:           fromUrl,
+		CommentInfoList:     infoList,
+		ProcessTime:         time.Now(),
+		CommentUpCount:      commentUp,
+		CommentDownCount:    commentDown,
+		CommentNeutralCount: commentNeutral,
 	}
 
-	//fmt.Printf("Prcessed : %s with Committer info list length of : %d", ret.Title, len(ret.CommitterInfoList))
+	//fmt.Printf("Prcessed : %s with Committer info list length of : %d", ret.Title, len(ret.CommentInfoList))
 
 	return ret, nil
 }
@@ -162,7 +168,7 @@ func ParseRangeDocument(board string, start int, end int) []*PDocRaw {
 	_ = IterateDocuments(board, start, end, func(docUrl string) {
 		p, _ := ParseSingleRawDocument(docUrl)
 		ret = append(ret, p)
-		fmt.Printf("Completed parsed : %s with committer count %d\n", p.Title, len(p.CommitterInfoList))
+		fmt.Printf("Completed parsed : %s with committer count %d\n", p.Title, len(p.CommentInfoList))
 	})
 
 	fmt.Printf("Completed parsing task : %d", len(ret))
@@ -188,7 +194,7 @@ func ParseRangeDocumentAsync(board string, start int, end int) (ret []*PDocRaw) 
 	for i := 0; i < len(docUrlList); i++ {
 		select {
 		case p := <-parseChannel:
-			fmt.Printf("(%d/%d)Completed parsed : %s with committer count %d\n", i+1, len(docUrlList), p.Title, len(p.CommitterInfoList))
+			fmt.Printf("(%d/%d)Completed parsed : %s with committer count %d\n", i+1, len(docUrlList), p.Title, len(p.CommentInfoList))
 			ret = append(ret, p)
 		}
 	}

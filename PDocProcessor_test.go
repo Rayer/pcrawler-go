@@ -1,13 +1,16 @@
 package pcrawler
 
 import (
+	_ "embed"
 	"encoding/json"
-	"github.com/magiconair/properties/assert"
-	diff "github.com/yudai/gojsondiff"
+	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
-	"io/ioutil"
+	"reflect"
 	"testing"
 )
+
+//go:embed test_resources/M.1559093660.A.946.html.json
+var expectedDoc string
 
 func TestParseSingleRawDocument(t *testing.T) {
 
@@ -32,34 +35,23 @@ func TestParseSingleRawDocument(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+
 			got, err := ParseSingleRawDocument(tt.args.fromUrl)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseSingleRawDocument() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			//Compare result and expected
-			aString, err := json.Marshal(got)
+			expected := &PDocRaw{}
+			err = json.Unmarshal([]byte(expectedDoc), expected)
 			if err != nil {
-				t.Error(err.Error())
-			}
-			bString, err := ioutil.ReadFile("test_resources/M.1559093660.A.946.html.json")
-			if err != nil {
-				t.Error(err.Error())
-			}
-
-			differ := diff.New()
-			d, err := differ.Compare(aString, bString)
-			if err != nil {
-				t.Error(err.Error())
-			}
-			//expect only "ProcessTime" different
-			if d == nil {
-				t.Error("Compare is nil, kinda strange....")
+				t.Errorf("error in unit test file, err : %v", err)
 				return
 			}
 
-			assert.Equal(t, len(d.Deltas()), 1, "Parsed item is not match!")
+			expected.ProcessTime = got.ProcessTime
+			equal := reflect.DeepEqual(*got, *expected)
+			assert.True(t, equal)
 
 		})
 	}

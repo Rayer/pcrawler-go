@@ -71,15 +71,15 @@ func TestCrawler_ParseDocument(t *testing.T) {
 			fields: NewCrawler("case1"),
 			args:   args{t1},
 			want: &PDocRaw{
-				UniqueID:          "",
-				Board:             "",
-				Title:             "[問卦] 有無永齡基金會的八卦？",
-				Author:            "Godfrey0216 (Godfrey)",
-				Identifier:        "",
-				PublicUrl:         "https://www.ptt.cc/bbs/case1/case1.html",
-				PublishTime:       time.Time{},
-				ProcessTime:       time.Time{},
-				CommitterInfoList: make([]CommitInfo, 7),
+				UniqueID:        "",
+				Board:           "",
+				Title:           "[問卦] 有無永齡基金會的八卦？",
+				Author:          "Godfrey0216 (Godfrey)",
+				Identifier:      "",
+				PublicUrl:       "https://www.ptt.cc/bbs/case1/case1.html",
+				PublishTime:     time.Time{},
+				ProcessTime:     time.Time{},
+				CommentInfoList: make([]CommentInfo, 7),
 			},
 			wantErr: false,
 		},
@@ -102,10 +102,10 @@ func TestCrawler_ParseDocument(t *testing.T) {
 				return
 			}
 
-			fmt.Printf("%+v\n", got.CommitterInfoList)
+			fmt.Printf("%+v\n", got.CommentInfoList)
 			assert.Equal(t, tt.want.PublicUrl, got.PublicUrl)
 			assert.Equal(t, tt.want.Author, got.Author)
-			assert.Equal(t, len(tt.want.CommitterInfoList), len(got.CommitterInfoList))
+			assert.Equal(t, len(tt.want.CommentInfoList), len(got.CommentInfoList))
 
 		})
 	}
